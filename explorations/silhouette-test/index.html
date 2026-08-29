@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#e9e7e2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Silo — home screen test</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper-1:#e9e7e2;--ink-1:#17171a;--ink-2:#6c6a64;--ink-3:#8b8880;
+  --line-2:#d6d3cc;--line-4:#c9c6bf;--accent:#f25c1f;--accent-press:#a83c0e;
+  --sans:Archivo,system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none}
+body{background:var(--paper-1);color:var(--ink-1);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;display:flex;flex-direction:column;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{font-family:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+header{flex:0 0 auto;height:52px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 0 20px}
+header button{width:44px;height:44px;display:grid;place-items:center;color:var(--ink-2)}
+.rule{flex:0 0 auto;height:1px;background:var(--line-2);margin:0 20px}
+main{flex:1;min-height:0;position:relative;overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:240px;height:480px;transform-origin:0 0}
+#vessel{position:absolute;inset:0;clip-path:path("M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M108 96 L132 96 L132 124 L108 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z")}
+#liquid{position:absolute;inset:0;width:240px;height:480px;filter:url(#goo)}
+#fig{position:absolute;inset:0;overflow:visible}
+#rail{position:absolute;left:16px;top:0;bottom:0;width:24px}
+#rail button{position:absolute;left:0;width:24px;height:32px;display:grid;place-items:center}
+.dot{width:11px;height:11px;border-radius:50%;border:1.4px solid var(--ink-1);position:relative}
+.dot i{position:absolute;inset:-1.4px;border-radius:50%;background:var(--ink-1);
+  transform:scale(0);transition:transform .32s cubic-bezier(.2,.9,.25,1)}
+.dot.on i{transform:scale(1)}
+footer{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 26px 34px 24px}
+#hint{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+#addWrap{position:relative;width:64px;height:64px;display:grid;place-items:center}
+#ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--accent);opacity:0;pointer-events:none}
+#add{width:56px;height:56px;border-radius:50%;border:1.6px solid var(--ink-1);display:grid;place-items:center;
+  transition:background .16s,border-color .16s,transform .16s}
+#add:active{transform:scale(.94);background:var(--accent-press);border-color:var(--accent-press);color:var(--paper-1)}
+#tiltAsk{position:absolute;left:24px;top:8px;padding:6px 10px;border:1px solid var(--line-4);border-radius:99px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2);display:none}
+@keyframes ringPulse{from{transform:scale(.72);opacity:.55}to{transform:scale(1.5);opacity:0}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goo">
+  <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/>
+  <feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7.2"/>
+</filter></svg>
+<header>
+  <button aria-label="Calendar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="5.5" width="17" height="15" rx="1.5"/><path d="M3.5 10.5h17M8 3.5v4M16 3.5v4"/></svg></button>
+  <button aria-label="Daily details"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 20V11M10 20V5M15 20V14M20 20V8"/></svg></button>
+</header>
+<div class="rule"></div>
+<main>
+  <div id="stage">
+    <div id="vessel"><canvas id="liquid" width="240" height="480"></canvas></div>
+    <svg id="fig" viewBox="0 0 240 480" width="240" height="480" fill="none" stroke="#17171a" stroke-width="2.6" stroke-linejoin="round">
+      <path id="figPath" d="M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z"/>
+    </svg>
+  </div>
+  <div id="rail"></div>
+  <button id="tiltAsk">Enable tilt</button>
+</main>
+<footer>
+  <div id="hint"></div>
+  <div id="addWrap"><div id="ring"></div>
+    <button id="add" aria-label="Add one cup"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+  </div>
+</footer>
+<script type="module">
+import { Fluid } from "./fluid-lab.js";
+
+const BODY="M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M108 96 L132 96 L132 124 L108 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z";
+const GOAL=8, VW=240, VH=480, G=1500;
+// dot rail: evenly spaced waterlines (figure units)
+const LEVELS=[365,323.7,282.3,241,199.7,158.3,117,75.7];
+// waterline each cup count settles at (the 8th fills the head)
+const TARGETS=[377,335.7,294.3,253,211.7,170.3,129,40];
+// "Syrup" model (1c on the fluid board), stiffened so the body doesn't compress
+const SYRUP={spacing:6.5,k:6,knear:1.4,visc:0.70,visc2:0,xsph:0.60,damp:0.990,wallFriction:0.85,cohesion:0.15,sub:3,radiusFactor:0.86};
+
+const stage=document.getElementById("stage"), lq=document.getElementById("liquid"),
+      ctx=lq.getContext("2d"), rail=document.getElementById("rail"),
+      hintEl=document.getElementById("hint"), askBtn=document.getElementById("tiltAsk"),
+      ring=document.getElementById("ring"), figPath=document.getElementById("figPath"),
+      main=document.querySelector("main");
+
+const fluid=new Fluid(BODY,{vw:VW,vh:VH,res:1.5,params:SYRUP});
+
+let cups=Number(localStorage.getItem("silo.cups")||0);
+let gx=0, gy=G, tgx=0, tgy=G, flourish=-1e9, gotTilt=false, dragging=false, dragX=0;
+let s=1, fx=0, fy=0;
+
+let settled=true, pouring=false, okFrames=0;
+if(cups){
+  fluid.setFill(0.2+cups*0.09);
+  fluid.calibrateFill(TARGETS[cups-1],G);
+}
+
+const dots=[];
+for(let n=1;n<=GOAL;n++){
+  const b=document.createElement("button");
+  b.innerHTML='<span class="dot"><i></i></span>';
+  b.addEventListener("click",()=>{ if(n===cups) setCups(cups-1); });
+  rail.appendChild(b); dots.push(b);
+}
+
+function layout(){
+  const r=main.getBoundingClientRect();
+  const dpr=Math.min(devicePixelRatio||1,2.5);
+  lq.width=VW*dpr; lq.height=VH*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  s=Math.min((r.width-96)/VW,(r.height-20)/VH);
+  fx=(r.width-VW*s)/2; fy=(r.height-VH*s)/2;
+  stage.style.transform=`translate(${fx}px,${fy}px) scale(${s})`;
+  dots.forEach((b,i)=>{ b.style.top=(fy+s*LEVELS[i]-16)+"px"; });
+}
+
+function paintUI(){
+  dots.forEach((b,i)=>{
+    b.firstChild.classList.toggle("on",i+1<=cups);
+    b.setAttribute("aria-label",i+1===cups?`Remove cup ${i+1}`:`Cup ${i+1}`);
+    b.style.cursor=i+1===cups?"pointer":"default";
+  });
+  hintEl.textContent = cups===0?"Tap + to log a cup"
+    : cups>=GOAL?"Goal met" : `${cups} of ${GOAL} — tap top dot to undo`;
+}
+
+// volume chases the cup's waterline, pouring in at the mouth, then latches so the
+// body is left still instead of being stirred every frame
+function regulate(){
+  if(settled) return;
+  if(!cups){
+    if(fluid.n) fluid.setCount(Math.max(0,fluid.n-8)); else settled=true;
+    return;
+  }
+  const mouth=cups===GOAL?[120,50]:[120,132];
+  if(fluid.regulate(TARGETS[cups-1],5,7,pouring?mouth:null)){
+    if(++okFrames>8){ settled=true; pouring=false; }
+  } else okFrames=0;
+}
+
+function setCups(n){
+  const prev=cups;
+  cups=Math.max(0,Math.min(GOAL,n));
+  localStorage.setItem("silo.cups",String(cups));
+  pouring=cups>prev; settled=false; okFrames=0;
+  paintUI();
+}
+
+document.getElementById("add").addEventListener("click",()=>{
+  if(cups>=GOAL) return;
+  const n=cups+1; setCups(n);
+  if(n===GOAL){ flourish=performance.now(); ring.style.animation="none"; void ring.offsetWidth; ring.style.animation="ringPulse .9s ease-out"; }
+});
+
+let last=performance.now();
+function frame(now){
+  requestAnimationFrame(frame);
+  let dt=(now-last)/1000; last=now;
+  dt=Math.max(1/240,Math.min(dt,1/30));
+
+  gx += (tgx-gx)*0.14; gy += (tgy-gy)*0.14; // gravity only, no idle drift
+  fluid.step(dt,gx,gy);
+  regulate();
+
+  const fl=Math.max(0,1-(now-flourish)/1100), accent=fl>0;
+  ctx.clearRect(0,0,VW,VH);
+  fluid.drawDiscs(ctx,accent?"#f25c1f":"#17171a");
+  figPath.setAttribute("stroke",accent?"#f25c1f":"#17171a");
+}
+
+function setGravity(beta,gamma){
+  const b=beta*Math.PI/180, g=gamma*Math.PI/180;
+  let ax=Math.sin(g), ay=Math.sin(b)*Math.cos(g);
+  const l=Math.hypot(ax,ay);
+  if(l<0.3) ay+=0.3-l; // keep a floor of downward pull when laid flat
+  const n=Math.hypot(ax,ay)||1;
+  tgx=ax/n*G; tgy=ay/n*G;
+}
+
+function onTilt(e){
+  if(e.gamma==null||e.beta==null) return;
+  gotTilt=true; askBtn.style.display="none";
+  setGravity(e.beta,e.gamma);
+}
+function listen(){
+  addEventListener("deviceorientation",onTilt);
+  addEventListener("deviceorientationabsolute",onTilt);
+}
+listen();
+setTimeout(()=>{
+  if(gotTilt) return;
+  const D=window.DeviceOrientationEvent;
+  if(D&&typeof D.requestPermission==="function") askBtn.style.display="block";
+},1600);
+askBtn.addEventListener("click",()=>{
+  const asks=[];
+  if(window.DeviceOrientationEvent?.requestPermission) asks.push(DeviceOrientationEvent.requestPermission());
+  if(window.DeviceMotionEvent?.requestPermission) asks.push(DeviceMotionEvent.requestPermission());
+  Promise.all(asks).then(rs=>{ if(rs.every(r=>r==="granted")){ listen(); listenMotion(); askBtn.style.display="none"; } }).catch(()=>{});
+});
+
+let lastMag=null;
+function onMotion(e){
+  const a=e.accelerationIncludingGravity; if(!a) return;
+  const mag=Math.hypot(a.x||0,a.y||0,a.z||0);
+  if(lastMag!=null){
+    const d=Math.abs(mag-lastMag);
+    if(d>4) fluid.impulse(Math.min(d,26)*20);
+  }
+  lastMag=mag;
+}
+function listenMotion(){ addEventListener("devicemotion",onMotion); }
+listenMotion();
+
+// desktop / sensor-blocked fallback: drag tilts the vessel
+addEventListener("pointerdown",e=>{ dragging=true; dragX=e.clientX; });
+addEventListener("pointermove",e=>{
+  if(!dragging||gotTilt) return;
+  const a=Math.max(-.6,Math.min(.6,(e.clientX-dragX)/300));
+  tgx=Math.sin(a)*G; tgy=Math.cos(a)*G;
+});
+const up=()=>{ dragging=false; if(!gotTilt){ tgx=0; tgy=G; } };
+addEventListener("pointerup",up); addEventListener("pointercancel",up);
+addEventListener("resize",layout);
+addEventListener("orientationchange",()=>setTimeout(layout,120));
+
+layout(); paintUI(); requestAnimationFrame(frame);
+</script>
+</body>
+</html>

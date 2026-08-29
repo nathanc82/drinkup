@@ -1,0 +1,47 @@
+:root {
+  /* base — paper */
+  --paper-1: #e9e7e2;        /* app background */
+  --paper-2: #dedbd4;        /* inset panel / filled card */
+  --paper-3: #fbfaf8;        /* lightest surface, sparingly */
+
+  /* base — ink */
+  --ink-1: #17171a;          /* primary text, filled bars, rules */
+  --ink-2: #6c6a64;          /* secondary text */
+  --ink-3: #8b8880;          /* mono labels, axis text */
+  --ink-4: #a8a5a0;          /* tertiary / disabled-ish text */
+  --ink-5: #c2bfb8;          /* ghost rows, unlogged values */
+
+  /* base — lines */
+  --line-1: #17171a;         /* section rule, 1px, full ink */
+  --line-2: #d6d3cc;         /* row hairline */
+  --line-3: #e4e1da;         /* ghost row hairline */
+  --line-4: #c9c6bf;         /* disabled control edge */
+
+  /* base — accent (single accent, used only for "now" and the primary act) */
+  --accent-1: #f25c1f;
+  --accent-hover: #d94d13;
+  --accent-press: #a83c0e;
+
+  /* semantic */
+  --surface-app: var(--paper-1);
+  --surface-inset: var(--paper-2);
+  --text-body: var(--ink-1);
+  --text-muted: var(--ink-2);
+  --text-label: var(--ink-3);
+  --text-ghost: var(--ink-5);
+  --rule-strong: var(--line-1);
+  --rule-hairline: var(--line-2);
+  --rule-ghost: var(--line-3);
+  --bar-filled: var(--ink-1);
+  --bar-empty: transparent;
+  --bar-empty-edge: #bfbcb5;
+  --bar-bonus: var(--accent-1);
+  --marker-now: var(--accent-1);
+  --action-bg: var(--accent-1);
+  --action-fg: #ffffff;
+  --toast-bg: var(--ink-1);
+  --toast-fg: var(--paper-1);
+  --control-track-on: var(--ink-1);
+  --control-track-off: var(--line-2);
+  --control-knob: #ffffff;
+}

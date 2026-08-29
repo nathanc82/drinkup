@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#e9e7e2}
+a{color:#f25c1f}a:hover{color:#a83c0e}
+input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;height:12px;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:#c9c6bf}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;margin-top:-4.5px;border-radius:50%;background:#17171a}
+input[type=range]::-moz-range-track{height:2px;background:#c9c6bf}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:#17171a}
+</style>
+</helmet>
+
+<div style="width:1480px;min-height:1000px;background:#e9e7e2;color:#17171a;font-family:Archivo,system-ui,sans-serif;padding:40px 44px 56px;box-sizing:border-box">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="gooA"><feGaussianBlur in="SourceGraphic" stdDeviation="{{ blurA }}" result="b"/><feColorMatrix in="b" mode="matrix" values="{{ matA }}"/></filter>
+    <filter id="gooB"><feGaussianBlur in="SourceGraphic" stdDeviation="{{ blurB }}" result="b"/><feColorMatrix in="b" mode="matrix" values="{{ matB }}"/></filter>
+    <filter id="gooC"><feGaussianBlur in="SourceGraphic" stdDeviation="{{ blurC }}" result="b"/><feColorMatrix in="b" mode="matrix" values="{{ matC }}"/></filter>
+    <filter id="gooD"><feGaussianBlur in="SourceGraphic" stdDeviation="{{ blurD }}" result="b"/><feColorMatrix in="b" mode="matrix" values="{{ matD }}"/></filter>
+    <filter id="gooE"><feGaussianBlur in="SourceGraphic" stdDeviation="{{ blurE }}" result="b"/><feColorMatrix in="b" mode="matrix" values="{{ matE }}"/></filter>
+  </svg>
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid #d6d3cc;padding-bottom:18px">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8b8880">Turn 1 · fluid study</div>
+      <h1 style="margin:8px 0 0;font-size:27px;font-weight:600;letter-spacing:-.015em">Five water models, same vessel</h1>
+    </div>
+    <div style="display:flex;align-items:flex-end;gap:26px">
+      <div style="display:flex;flex-direction:column;gap:5px;width:170px">
+        <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8880"><span>Fill</span><span>{{ fillText }}</span></div>
+        <input type="range" min="0.08" max="1" step="0.02" value="{{ fill }}" onChange="{{ onFill }}" style="width:100%"/>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;width:170px">
+        <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8b8880"><span>Tilt</span><span>{{ tiltText }}</span></div>
+        <input type="range" min="-40" max="40" step="1" value="{{ tilt }}" onChange="{{ onTilt }}" style="width:100%"/>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button onClick="{{ onShake }}" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:9px 15px;border:1.4px solid #17171a;border-radius:99px;background:none;color:#17171a;cursor:pointer" style-hover="background:#17171a;color:#e9e7e2">Shake</button>
+        <button onClick="{{ onReset }}" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:9px 15px;border:1px solid #c9c6bf;border-radius:99px;background:none;color:#6c6a64;cursor:pointer" style-hover="border-color:#17171a;color:#17171a">Reset</button>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:#8b8880;width:104px;text-align:right">{{ statText }}</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:24px;margin-top:30px;align-items:flex-start">
+
+    <div id="1a" style="width:256px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px;min-height:74px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:3px 7px;border:1px solid #c9c6bf;border-radius:3px;color:#6c6a64">1a</span>
+          <span style="font-size:15px;font-weight:600">Still &amp; fine</span>
+        </div>
+        <div style="font-size:12.5px;line-height:1.45;color:#6c6a64">Fine grain, heavy velocity smoothing. Settles glassy flat and barely answers a tilt.</div>
+      </div>
+      <div onClick="{{ soloA }}" title="Solo this model" style="height:274px;display:flex;justify-content:center;border-top:1px solid #d6d3cc;border-bottom:1px solid #d6d3cc;padding:5px 0;cursor:pointer">
+        <div style="position:relative;width:132px;height:264px">
+          <div style="position:absolute;left:0;top:0;width:240px;height:480px;transform:scale(.55);transform-origin:0 0">
+            <div style="position:absolute;inset:0;clip-path:path('M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M108 96 L132 96 L132 124 L108 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z')">
+              <canvas ref="{{ refA }}" width="240" height="480" style="position:absolute;inset:0;width:240px;height:480px;filter:url(#gooA)"></canvas>
+            </div>
+            <svg viewBox="0 0 240 480" width="240" height="480" fill="none" stroke="#17171a" stroke-width="2.6" stroke-linejoin="round" style="position:absolute;inset:0">
+              <path d="M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+        <sc-for list="{{ controlsA }}" as="c" hint-placeholder-count="9">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8b8880"><span>{{ c.label }}</span><span style="color:#17171a">{{ c.text }}</span></div>
+            <input type="range" min="{{ c.min }}" max="{{ c.max }}" step="{{ c.step }}" value="{{ c.value }}" onChange="{{ c.onChange }}" style="width:100%"/>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div id="1b" style="width:256px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px;min-height:74px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:3px 7px;border:1px solid #c9c6bf;border-radius:3px;color:#6c6a64">1b</span>
+          <span style="font-size:15px;font-weight:600">Live water</span>
+        </div>
+        <div style="font-size:12.5px;line-height:1.45;color:#6c6a64">Stiff and low-viscosity. Real slosh, quick surface recovery, slippery walls.</div>
+      </div>
+      <div onClick="{{ soloB }}" title="Solo this model" style="height:274px;display:flex;justify-content:center;border-top:1px solid #d6d3cc;border-bottom:1px solid #d6d3cc;padding:5px 0;cursor:pointer">
+        <div style="position:relative;width:132px;height:264px">
+          <div style="position:absolute;left:0;top:0;width:240px;height:480px;transform:scale(.55);transform-origin:0 0">
+            <div style="position:absolute;inset:0;clip-path:path('M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M108 96 L132 96 L132 124 L108 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z')">
+              <canvas ref="{{ refB }}" width="240" height="480" style="position:absolute;inset:0;width:240px;height:480px;filter:url(#gooB)"></canvas>
+            </div>
+            <svg viewBox="0 0 240 480" width="240" height="480" fill="none" stroke="#17171a" stroke-width="2.6" stroke-linejoin="round" style="position:absolute;inset:0">
+              <path d="M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+        <sc-for list="{{ controlsB }}" as="c" hint-placeholder-count="9">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8b8880"><span>{{ c.label }}</span><span style="color:#17171a">{{ c.text }}</span></div>
+            <input type="range" min="{{ c.min }}" max="{{ c.max }}" step="{{ c.step }}" value="{{ c.value }}" onChange="{{ c.onChange }}" style="width:100%"/>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div id="1c" style="width:256px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px;min-height:74px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:3px 7px;border:1px solid #c9c6bf;border-radius:3px;color:#6c6a64">1c</span>
+          <span style="font-size:15px;font-weight:600">Syrup</span>
+        </div>
+        <div style="font-size:12.5px;line-height:1.45;color:#6c6a64">High viscosity, sticky walls. Moves as one slow body, surface lags behind.</div>
+      </div>
+      <div onClick="{{ soloC }}" title="Solo this model" style="height:274px;display:flex;justify-content:center;border-top:1px solid #d6d3cc;border-bottom:1px solid #d6d3cc;padding:5px 0;cursor:pointer">
+        <div style="position:relative;width:132px;height:264px">
+          <div style="position:absolute;left:0;top:0;width:240px;height:480px;transform:scale(.55);transform-origin:0 0">
+            <div style="position:absolute;inset:0;clip-path:path('M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M108 96 L132 96 L132 124 L108 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z')">
+              <canvas ref="{{ refC }}" width="240" height="480" style="position:absolute;inset:0;width:240px;height:480px;filter:url(#gooC)"></canvas>
+            </div>
+            <svg viewBox="0 0 240 480" width="240" height="480" fill="none" stroke="#17171a" stroke-width="2.6" stroke-linejoin="round" style="position:absolute;inset:0">
+              <path d="M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+        <sc-for list="{{ controlsC }}" as="c" hint-placeholder-count="9">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8b8880"><span>{{ c.label }}</span><span style="color:#17171a">{{ c.text }}</span></div>
+            <input type="range" min="{{ c.min }}" max="{{ c.max }}" step="{{ c.step }}" value="{{ c.value }}" onChange="{{ c.onChange }}" style="width:100%"/>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div id="1d" style="width:256px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px;min-height:74px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:3px 7px;border:1px solid #c9c6bf;border-radius:3px;color:#6c6a64">1d</span>
+          <span style="font-size:15px;font-weight:600">Cohesive</span>
+        </div>
+        <div style="font-size:12.5px;line-height:1.45;color:#6c6a64">Surface tension on. Rounded meniscus, droplets that cling and rejoin.</div>
+      </div>
+      <div onClick="{{ soloD }}" title="Solo this model" style="height:274px;display:flex;justify-content:center;border-top:1px solid #d6d3cc;border-bottom:1px solid #d6d3cc;padding:5px 0;cursor:pointer">
+        <div style="position:relative;width:132px;height:264px">
+          <div style="position:absolute;left:0;top:0;width:240px;height:480px;transform:scale(.55);transform-origin:0 0">
+            <div style="position:absolute;inset:0;clip-path:path('M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M108 96 L132 96 L132 124 L108 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z')">
+              <canvas ref="{{ refD }}" width="240" height="480" style="position:absolute;inset:0;width:240px;height:480px;filter:url(#gooD)"></canvas>
+            </div>
+            <svg viewBox="0 0 240 480" width="240" height="480" fill="none" stroke="#17171a" stroke-width="2.6" stroke-linejoin="round" style="position:absolute;inset:0">
+              <path d="M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+        <sc-for list="{{ controlsD }}" as="c" hint-placeholder-count="9">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8b8880"><span>{{ c.label }}</span><span style="color:#17171a">{{ c.text }}</span></div>
+            <input type="range" min="{{ c.min }}" max="{{ c.max }}" step="{{ c.step }}" value="{{ c.value }}" onChange="{{ c.onChange }}" style="width:100%"/>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div id="1e" style="width:256px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px;min-height:74px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:3px 7px;border:1px solid #c9c6bf;border-radius:3px;color:#6c6a64">1e</span>
+          <span style="font-size:15px;font-weight:600">Micro grain</span>
+        </div>
+        <div style="font-size:12.5px;line-height:1.45;color:#6c6a64">Smallest particles, tight fusion. Reads as continuous ink rather than blobs.</div>
+      </div>
+      <div onClick="{{ soloE }}" title="Solo this model" style="height:274px;display:flex;justify-content:center;border-top:1px solid #d6d3cc;border-bottom:1px solid #d6d3cc;padding:5px 0;cursor:pointer">
+        <div style="position:relative;width:132px;height:264px">
+          <div style="position:absolute;left:0;top:0;width:240px;height:480px;transform:scale(.55);transform-origin:0 0">
+            <div style="position:absolute;inset:0;clip-path:path('M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M108 96 L132 96 L132 124 L108 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z')">
+              <canvas ref="{{ refE }}" width="240" height="480" style="position:absolute;inset:0;width:240px;height:480px;filter:url(#gooE)"></canvas>
+            </div>
+            <svg viewBox="0 0 240 480" width="240" height="480" fill="none" stroke="#17171a" stroke-width="2.6" stroke-linejoin="round" style="position:absolute;inset:0">
+              <path d="M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+        <sc-for list="{{ controlsE }}" as="c" hint-placeholder-count="9">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8b8880"><span>{{ c.label }}</span><span style="color:#17171a">{{ c.text }}</span></div>
+            <input type="range" min="{{ c.min }}" max="{{ c.max }}" step="{{ c.step }}" value="{{ c.value }}" onChange="{{ c.onChange }}" style="width:100%"/>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:34px;padding-top:16px;border-top:1px solid #d6d3cc;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8b8880">{{ soloHint }} · Grain is particle spacing in figure units · viscosity resists shear · springiness is pressure stiffness · fusion is the metaball blur</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1480,&quot;height&quot;:1080},&quot;fill&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.55,&quot;min&quot;:0.08,&quot;max&quot;:1,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Board&quot;}}">
+const BODY = "M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M108 96 L132 96 L132 124 L108 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z";
+const G = 1500;
+const KEYS = ["A", "B", "C", "D", "E"];
+
+const PRESETS = {
+  A: { spacing: 6.0, k: 3.0, knear: 1.0, visc: 0.10, xsph: 0.45, damp: 0.996, wallFriction: 0.55, cohesion: 0, sub: 2, radiusFactor: 0.82, blur: 2.4, thresh: 22 },
+  B: { spacing: 5.6, k: 5.0, knear: 1.2, visc: 0.04, xsph: 0.16, damp: 0.999, wallFriction: 0.25, cohesion: 0, sub: 3, radiusFactor: 0.98, blur: 2.2, thresh: 24 },
+  C: { spacing: 6.5, k: 3.2, knear: 1.1, visc: 0.70, xsph: 0.60, damp: 0.990, wallFriction: 0.85, cohesion: 0.15, sub: 2, radiusFactor: 0.86, blur: 3.0, thresh: 18 },
+  D: { spacing: 6.0, k: 3.6, knear: 1.2, visc: 0.16, xsph: 0.30, damp: 0.997, wallFriction: 0.45, cohesion: 0.65, sub: 2, radiusFactor: 0.80, blur: 3.0, thresh: 16 },
+  E: { spacing: 4.6, k: 2.8, knear: 0.9, visc: 0.08, xsph: 0.35, damp: 0.997, wallFriction: 0.5, cohesion: 0, sub: 2, radiusFactor: 0.66, blur: 1.5, thresh: 30 }
+};
+
+const CONTROLS = [
+  { key: "spacing", label: "Grain", min: 3.4, max: 10, step: 0.2, fmt: v => v.toFixed(1) },
+  { key: "visc", label: "Viscosity", min: 0, max: 1.2, step: 0.02, fmt: v => v.toFixed(2) },
+  { key: "k", label: "Springiness", min: 1, max: 8, step: 0.1, fmt: v => v.toFixed(1) },
+  { key: "xsph", label: "Smoothing", min: 0, max: 0.8, step: 0.02, fmt: v => v.toFixed(2) },
+  { key: "damp", label: "Damping", min: 0.985, max: 1, step: 0.001, fmt: v => v.toFixed(3) },
+  { key: "wallFriction", label: "Wall grip", min: 0, max: 1, step: 0.05, fmt: v => v.toFixed(2) },
+  { key: "cohesion", label: "Cohesion", min: 0, max: 1, step: 0.05, fmt: v => v.toFixed(2) },
+  { key: "radiusFactor", label: "Blob size", min: 0.5, max: 1.2, step: 0.02, fmt: v => v.toFixed(2) },
+  { key: "blur", label: "Fusion", min: 0.6, max: 5, step: 0.1, fmt: v => v.toFixed(1) }
+];
+
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const params = {};
+    for(const k of KEYS) params[k] = { ...PRESETS[k] };
+    this.state = { params, fill: this.props.fill ?? 0.55, tilt: 0, fps: 0, n: 0 };
+    this.refs_ = {}; this.ctxs = {}; this.fluids = {};
+    for(const k of KEYS) this.refs_[k] = React.createRef();
+  }
+
+  async componentDidMount(){
+    const mod = await import("./silhouette-test/fluid-lab.js");
+    if(this.dead) return;
+    this.Fluid = mod.Fluid;
+    for(const k of KEYS){
+      const cv = this.refs_[k].current;
+      if(!cv) continue;
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      cv.width = 240 * dpr; cv.height = 480 * dpr;
+      const ctx = cv.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      this.ctxs[k] = ctx;
+      const f = new this.Fluid(BODY, { vw: 240, vh: 480, res: 2, params: this.state.params[k] });
+      f.setFill(this.state.fill);
+      f.calibrateFill(this.targetY(), G);
+      this.fluids[k] = f;
+    }
+    this.last = performance.now(); this.frames = 0; this.fpsAt = this.last;
+    this.raf = requestAnimationFrame(this.frame);
+  }
+
+  targetY(){ return 468 - this.state.fill * 410; }
+
+  componentWillUnmount(){ this.dead = true; cancelAnimationFrame(this.raf); }
+
+  frame = now => {
+    this.raf = requestAnimationFrame(this.frame);
+    let dt = (now - this.last) / 1000; this.last = now;
+    dt = Math.max(1 / 240, Math.min(dt, 1 / 30));
+    const a = (this.state.tilt * Math.PI) / 180;
+    const gx = Math.sin(a) * G, gy = Math.cos(a) * G;
+    let total = 0;
+    const solo = this.state.solo;
+    for(const k of KEYS){
+      const f = this.fluids[k], ctx = this.ctxs[k];
+      if(!f || !ctx) continue;
+      if(solo && solo !== k){ total += f.n; continue; }
+      f.step(dt, gx, gy);
+      // top up toward the shared waterline, then latch so the body is left still
+      if(!this.levelled) this.levelled = {};
+      if(!this.levelled[k] && this.frames % 20 === 0 && f.regulate(this.targetY(), 5, 12)) this.levelled[k] = true;
+      ctx.clearRect(0, 0, 240, 480);
+      f.drawDiscs(ctx, "#17171a");
+      total += f.n;
+    }
+    this.frames++;
+    if(now - this.fpsAt > 500){
+      this.setState({ fps: Math.round((this.frames * 1000) / (now - this.fpsAt)), n: total });
+      this.frames = 0; this.fpsAt = now;
+    }
+  };
+
+  setParam(k, key, value){
+    this.setState(s => {
+      const params = { ...s.params, [k]: { ...s.params[k], [key]: value } };
+      return { params };
+    }, () => {
+      const f = this.fluids[k];
+      if(!f) return;
+      if(key === "blur") return;
+      f.set({ [key]: value });
+    });
+  }
+
+  controlsFor(k){
+    const p = this.state.params[k];
+    return CONTROLS.map(c => ({
+      label: c.label, min: c.min, max: c.max, step: c.step,
+      value: p[c.key], text: c.fmt(p[c.key]),
+      onChange: e => this.setParam(k, c.key, parseFloat(e.target.value))
+    }));
+  }
+
+  matrix(k){ const t = this.state.params[k].thresh; return `1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 ${t} ${-t * 0.4}`; }
+
+  renderVals(){
+    const s = this.state;
+    const out = {
+      fill: s.fill, tilt: s.tilt,
+      fillText: Math.round(s.fill * 100) + "%",
+      tiltText: s.tilt + "°",
+      statText: s.solo ? `solo 1${s.solo.toLowerCase()} · ${s.fps} fps` : `${s.fps} fps · ${s.n}p`,
+      soloHint: s.solo ? "Click the soloed figure to run all five again" : "Click any figure to solo it at full frame rate",
+      onFill: e => {
+        const v = parseFloat(e.target.value);
+        this.setState({ fill: v }, () => {
+          this.levelled = {};
+          clearTimeout(this.fillTimer);
+          this.fillTimer = setTimeout(() => {
+            const target = this.targetY();
+            for(const k of KEYS){ const f = this.fluids[k]; if(f){ f.setFill(v); f.calibrateFill(target, G); } }
+          }, 140);
+        });
+      },
+      onTilt: e => this.setState({ tilt: parseFloat(e.target.value) }),
+      onShake: () => { for(const k of KEYS) this.fluids[k]?.impulse(260); },
+      onReset: () => {
+        const params = {};
+        for(const k of KEYS) params[k] = { ...PRESETS[k] };
+        this.setState({ params, tilt: 0 }, () => {
+          for(const k of KEYS){
+            const f = this.fluids[k];
+            if(!f) continue;
+            f.set({ ...PRESETS[k] });
+            f.setFill(this.state.fill);
+            f.calibrateFill(this.targetY(), G);
+          }
+        });
+      }
+    };
+    for(const k of KEYS){
+      out["ref" + k] = this.refs_[k];
+      out["solo" + k] = () => this.setState(st => ({ solo: st.solo === k ? null : k }));
+      out["controls" + k] = this.controlsFor(k);
+      out["blur" + k] = s.params[k].blur;
+      out["mat" + k] = this.matrix(k);
+    }
+    return out;
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f0eee9;font-family:Archivo,system-ui,sans-serif}
+a{color:#17171a}a:hover{color:#f25c1f}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px "IBM Plex Mono",monospace;padding:3px 7px;background:#17171a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 Archivo,sans-serif;color:#17171a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px "IBM Plex Mono",monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#17171a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 Archivo,sans-serif;color:rgba(0,0,0,.55);max-width:402px}
+.dv-card{max-width:100%;border-radius:8px;overflow:hidden}
+.dv-opt:target .dv-oid{background:#f25c1f;color:#fff}
+.dv-next{margin:22px 0 0;font:12px/1.6 Archivo,sans-serif;color:rgba(0,0,0,.5)}
+.dv-note{max-width:640px;font:13px/1.65 Archivo,sans-serif;color:rgba(0,0,0,.62)}
+.dv-note b{color:#17171a;font-weight:600}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t2">
+  <div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Full flow, built from <a class="dv-oid" href="#1a">1a</a> — working prototype</span></div>
+  <p class="dv-note" style="margin:0 0 26px">Tap <b>+ ONE CUP</b> to log; <b>press and hold</b> it to remove the last cup. Four tabs along the bottom. Past cup 8 the bar keeps growing in orange and the header flips to a bonus read, so overshooting is a reward rather than an error.</p>
+  <div class="dv-opts">
+    <div class="dv-opt" id="2a">
+      <div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a><span>Interactive — Today · Days · Alerts · Setup</span></div>
+      <div class="dv-card">
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="height:100%;background:#e9e7e2;color:#17171a;box-sizing:border-box;display:flex;flex-direction:column;position:relative;overflow:hidden">
+
+            <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+              <div style="flex:1;display:flex;flex-direction:column;padding:58px 24px 0;min-height:0">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">
+                  <span>TODAY · SAT 08 AUG</span><span>{{ cupMl }} ML / CUP</span>
+                </div>
+                <div style="display:flex;align-items:flex-end;gap:10px;margin-top:24px">
+                  <div style="font:600 108px/.82 Archivo,sans-serif;letter-spacing:-.05em">{{ count }}</div>
+                  <div style="font:500 24px/1 Archivo,sans-serif;color:#a8a5a0;padding-bottom:8px">/ {{ goalLabel }}</div>
+                </div>
+                <div style="font:400 13px/1 'IBM Plex Mono',monospace;color:#6c6a64;margin-top:11px">{{ litres }} L logged · {{ remaining }}</div>
+                <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:14px;padding:11px 13px;background:#17171a;color:#e9e7e2;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;display:flex;justify-content:space-between;align-items:center">
+                    <span>{{ headline }}</span><span style="color:#f25c1f">✦</span>
+                  </div>
+                </sc-if>
+                <div style="display:flex;gap:4px;margin-top:18px">
+                  <sc-for list="{{ segments }}" as="s" hint-placeholder-count="8">
+                    <div style="flex:1;height:24px;background:{{ s.bg }};border:1px solid {{ s.bd }};box-sizing:border-box"></div>
+                  </sc-for>
+                </div>
+                <div style="height:1px;background:#17171a;margin-top:24px"></div>
+                <div style="display:flex;justify-content:space-between;font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880;padding:10px 0 6px">
+                  <span>LOG</span><span>RUNNING</span>
+                </div>
+                <div style="flex:1;overflow:auto;display:flex;flex-direction:column;min-height:0">
+                  <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+                    <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #d6d3cc;flex:none">
+                      <span style="font:500 14px/1 'IBM Plex Mono',monospace;width:52px">{{ r.t }}</span>
+                      <span style="width:9px;height:9px;background:{{ r.dot }}"></span>
+                      <span style="flex:1;font:400 14px/1 Archivo,sans-serif;color:#6c6a64">{{ r.note }}</span>
+                      <span style="font:500 13px/1 'IBM Plex Mono',monospace;color:{{ r.runColor }}">{{ r.running }}</span>
+                    </div>
+                  </sc-for>
+                  <sc-for list="{{ ghosts }}" as="g" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #e4e1da;flex:none">
+                      <span style="font:400 14px/1 'IBM Plex Mono',monospace;width:52px;color:#c2bfb8">{{ g.label }}</span>
+                      <span style="width:9px;height:9px;border:1px solid #c2bfb8;box-sizing:border-box"></span>
+                      <span style="flex:1;font:400 14px/1 Archivo,sans-serif;color:#c2bfb8">{{ g.note }}</span>
+                      <span style="font:400 13px/1 'IBM Plex Mono',monospace;color:#c2bfb8">{{ g.running }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="padding:16px 0 14px">
+                  <button onClick="{{ addCup }}" onMouseDown="{{ holdStart }}" onMouseUp="{{ holdEnd }}" onMouseLeave="{{ holdEnd }}" onTouchStart="{{ holdStart }}" onTouchEnd="{{ holdEnd }}" style="width:100%;height:58px;background:#f25c1f;color:#fff;border:0;border-radius:3px;font:600 15px/1 Archivo,sans-serif;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer" style-hover="background:#d94d13" style-active="background:#a83c0e">
+                    <span style="font-size:22px;font-weight:400;line-height:1">+</span>ONE CUP
+                  </button>
+                  <div style="text-align:center;font:400 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#a8a5a0;margin-top:10px">HOLD TO UNDO LAST</div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isDays }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1;display:flex;flex-direction:column;padding:58px 24px 0;min-height:0;overflow:auto">
+                <div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">HISTORY</div>
+                <div style="display:flex;align-items:flex-end;gap:10px;margin-top:24px">
+                  <div style="font:600 108px/.82 Archivo,sans-serif;letter-spacing:-.05em">05</div>
+                  <div style="font:500 24px/1 Archivo,sans-serif;color:#a8a5a0;padding-bottom:8px">day streak</div>
+                </div>
+                <div style="font:400 13px/1 'IBM Plex Mono',monospace;color:#6c6a64;margin-top:11px">best 12 days · avg 8.1 cups</div>
+
+                <div style="display:flex;align-items:center;gap:12px;margin-top:32px;border-top:1px solid #17171a;padding-top:14px">
+                  <button onClick="{{ prevWeek }}" style="width:34px;height:34px;border:1px solid #d6d3cc;background:transparent;color:{{ prevColor }};font:400 15px/1 'IBM Plex Mono',monospace;cursor:pointer;border-radius:2px" style-hover="border-color:#17171a">‹</button>
+                  <div style="flex:1;text-align:center">
+                    <div style="font:600 15px/1 'IBM Plex Mono',monospace;letter-spacing:.06em">{{ weekLabel }}</div>
+                    <div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880;margin-top:6px">{{ weekYear }}</div>
+                  </div>
+                  <button onClick="{{ nextWeek }}" style="width:34px;height:34px;border:1px solid #d6d3cc;background:transparent;color:{{ nextColor }};font:400 15px/1 'IBM Plex Mono',monospace;cursor:pointer;border-radius:2px" style-hover="border-color:#17171a">›</button>
+                </div>
+
+                <div style="display:flex;gap:8px;margin-top:22px">
+                  <sc-for list="{{ week }}" as="w" hint-placeholder-count="7">
+                    <button onClick="{{ w.open }}" style="flex:1;background:transparent;border:0;padding:0;cursor:{{ w.cursor }};display:flex;flex-direction:column;align-items:stretch;gap:8px" style-hover="opacity:.62">
+                      <div style="height:118px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px">
+                        <span style="font:500 11px/1 'IBM Plex Mono',monospace;color:{{ w.fg }}">{{ w.c }}</span>
+                        <div style="width:100%;height:{{ w.h }};background:{{ w.bg }}"></div>
+                      </div>
+                      <div style="border-top:1px solid #17171a;padding-top:9px;text-align:center">
+                        <div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8b8880">{{ w.d }}</div>
+                        <div style="font:500 13px/1 'IBM Plex Mono',monospace;color:{{ w.dayFg }};margin-top:5px">{{ w.day }}</div>
+                      </div>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="font:400 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#a8a5a0;margin-top:12px;text-align:center">TAP A DAY FOR ITS 24 HOURS</div>
+
+                <div style="margin-top:28px;display:flex;flex-direction:column">
+                  <div style="display:flex;justify-content:space-between;font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880;padding-bottom:8px">
+                    <span>WEEK OF {{ weekLabel }}</span><span>CUPS</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:13px 0;border-top:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Days at goal</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500">{{ weekAtGoal }}</span></div>
+                  <div style="display:flex;justify-content:space-between;padding:13px 0;border-top:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Total</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500;white-space:nowrap">{{ weekCups }} · {{ weekLitres }}</span></div>
+                  <div style="display:flex;justify-content:space-between;padding:13px 0;border-top:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Daily average</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500">{{ weekAvg }}</span></div>
+                  <div style="display:flex;justify-content:space-between;padding:13px 0;border-top:1px solid #d6d3cc;border-bottom:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Usual first cup</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500">06:52</span></div>
+                </div>
+                <div style="padding:22px 0 14px;font:400 13px/1.6 Archivo,sans-serif;color:#8b8880">Weekends run higher. Wednesday is the one to watch.</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isAlerts }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1;display:flex;flex-direction:column;padding:58px 24px 0;min-height:0;overflow:auto">
+                <div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">REMINDERS</div>
+                <div style="font:400 22px/1.35 Archivo,sans-serif;margin-top:20px;max-width:290px">Four nudges a day.<br><span style="color:#a8a5a0">Silent after 20:00.</span></div>
+                <div style="height:1px;background:#17171a;margin-top:26px"></div>
+                <div style="display:flex;flex-direction:column">
+                  <sc-for list="{{ reminders }}" as="r" hint-placeholder-count="5">
+                    <div style="display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid #d6d3cc">
+                      <span style="font:500 16px/1 'IBM Plex Mono',monospace;width:60px">{{ r.t }}</span>
+                      <span style="flex:1;font:400 14px/1 Archivo,sans-serif;color:#6c6a64">{{ r.label }}</span>
+                      <button onClick="{{ r.toggle }}" style="width:44px;height:26px;border:0;border-radius:13px;background:{{ r.track }};display:flex;align-items:center;justify-content:{{ r.knob }};padding:3px;cursor:pointer">
+                        <span style="width:20px;height:20px;border-radius:50%;background:#fff"></span>
+                      </button>
+                    </div>
+                  </sc-for>
+                </div>
+                <button style="margin-top:20px;height:48px;background:transparent;border:1px dashed #b6b3ad;color:#6c6a64;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;border-radius:3px;cursor:pointer" style-hover="border-color:#17171a;color:#17171a">+ ADD A TIME</button>
+                <div style="margin-top:30px;display:flex;flex-direction:column">
+                  <div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880;padding-bottom:8px">BEHAVIOUR</div>
+                  <div style="display:flex;align-items:center;gap:14px;padding:15px 0;border-top:1px solid #d6d3cc">
+                    <div style="flex:1"><div style="font:400 14px/1.3 Archivo,sans-serif">Skip if I've just logged</div><div style="font:400 12px/1.4 Archivo,sans-serif;color:#a8a5a0;margin-top:3px">No nudge within an hour of a cup</div></div>
+                    <button onClick="{{ toggleSmart }}" style="width:44px;height:26px;border:0;border-radius:13px;background:{{ smartTrack }};display:flex;align-items:center;justify-content:{{ smartKnob }};padding:3px;cursor:pointer">
+                      <span style="width:20px;height:20px;border-radius:50%;background:#fff"></span>
+                    </button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:14px;padding:15px 0;border-top:1px solid #d6d3cc;border-bottom:1px solid #d6d3cc">
+                    <div style="flex:1"><div style="font:400 14px/1.3 Archivo,sans-serif">Sound</div><div style="font:400 12px/1.4 Archivo,sans-serif;color:#a8a5a0;margin-top:3px">Otherwise a silent banner</div></div>
+                    <button onClick="{{ toggleSound }}" style="width:44px;height:26px;border:0;border-radius:13px;background:{{ soundTrack }};display:flex;align-items:center;justify-content:{{ soundKnob }};padding:3px;cursor:pointer">
+                      <span style="width:20px;height:20px;border-radius:50%;background:#fff"></span>
+                    </button>
+                  </div>
+                </div>
+                <div style="height:20px"></div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isSetup }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1;display:flex;flex-direction:column;padding:58px 24px 0;min-height:0;overflow:auto">
+                <div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">SETUP</div>
+                <div style="margin-top:26px;padding:20px;background:#dedbd4">
+                  <div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">DAILY GOAL</div>
+                  <div style="display:flex;align-items:flex-end;gap:10px;margin-top:14px">
+                    <div style="font:600 64px/.82 Archivo,sans-serif;letter-spacing:-.04em">{{ goalLabel }}</div>
+                    <div style="font:500 15px/1 'IBM Plex Mono',monospace;color:#6c6a64;padding-bottom:6px">cups · {{ goalLitres }} L</div>
+                  </div>
+                  <div style="font:400 12px/1.5 Archivo,sans-serif;color:#6c6a64;margin-top:12px">A minimum, not a ceiling. Extra cups are counted.</div>
+                </div>
+                <div style="margin-top:26px;display:flex;flex-direction:column">
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Cup size</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500;color:#6c6a64">{{ cupMl }} ml ›</span></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Units</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500;color:#6c6a64">metric ›</span></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Day starts at</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500;color:#6c6a64">04:00 ›</span></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Apple Health</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500;color:#6c6a64">connected ›</span></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Widget &amp; Watch</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500;color:#6c6a64">on ›</span></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid #d6d3cc;border-bottom:1px solid #d6d3cc;font:400 14px/1 Archivo,sans-serif"><span>Export data</span><span style="font-family:'IBM Plex Mono',monospace;font-weight:500;color:#6c6a64">CSV ›</span></div>
+                </div>
+                <div style="margin-top:auto;padding:26px 0 14px;font:400 10px/1.6 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#a8a5a0">H2O–8 · VERSION 1.0<br>NO ACCOUNT. NO ADS. DATA STAYS ON DEVICE.</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ hasDetail }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;background:#e9e7e2;z-index:5;display:flex;flex-direction:column;padding:58px 24px 0;box-sizing:border-box">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">{{ detail.liveLabel }}</div>
+                  <button onClick="{{ closeDay }}" style="width:34px;height:34px;border:1px solid #d6d3cc;background:transparent;color:#17171a;font:400 14px/1 'IBM Plex Mono',monospace;cursor:pointer;border-radius:2px" style-hover="border-color:#17171a">✕</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;margin-top:20px">
+                  <button onClick="{{ detail.prev }}" style="width:34px;height:34px;border:1px solid #d6d3cc;background:transparent;color:{{ detail.prevColor }};font:400 15px/1 'IBM Plex Mono',monospace;cursor:pointer;border-radius:2px;flex:none" style-hover="border-color:#17171a">‹</button>
+                  <div style="flex:1;display:flex;align-items:baseline;gap:12px;justify-content:center">
+                    <div style="font:600 36px/1 Archivo,sans-serif;letter-spacing:-.03em">{{ detail.date }}</div>
+                    <div style="font:500 13px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">{{ detail.name }}</div>
+                  </div>
+                  <button onClick="{{ detail.next }}" style="width:34px;height:34px;border:1px solid #d6d3cc;background:transparent;color:{{ detail.nextColor }};font:400 15px/1 'IBM Plex Mono',monospace;cursor:pointer;border-radius:2px;flex:none" style-hover="border-color:#17171a">›</button>
+                </div>
+                <div style="display:flex;align-items:flex-end;gap:10px;margin-top:18px">
+                  <div style="font:600 68px/.82 Archivo,sans-serif;letter-spacing:-.04em">{{ detail.count }}</div>
+                  <div style="font:500 18px/1 Archivo,sans-serif;color:#a8a5a0;padding-bottom:5px">/ {{ detail.goalLabel }}</div>
+                  <div style="flex:1"></div>
+                  <div style="text-align:right;font:500 12px/1.6 'IBM Plex Mono',monospace;color:{{ detail.metColor }}">{{ detail.litres }} L<br>{{ detail.met }}</div>
+                </div>
+
+                <div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880;margin-top:28px">24 HOURS</div>
+                <div style="display:flex;align-items:flex-end;gap:2px;height:82px;margin-top:12px;border-bottom:1px solid #17171a">
+                  <sc-for list="{{ detail.hours }}" as="h" hint-placeholder-count="24">
+                    <div style="flex:1;height:{{ h.tall }};background:{{ h.bg }}"></div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;justify-content:space-between;font:400 9px/1 'IBM Plex Mono',monospace;color:#8b8880;margin-top:7px">
+                  <span>00</span><span>06</span><span>12</span><span>18</span><span>23</span>
+                </div>
+
+                <div style="display:flex;gap:1px;background:#d6d3cc;margin-top:22px">
+                  <div style="flex:1;background:#e9e7e2;padding:12px 0"><div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">FIRST</div><div style="font:500 16px/1 'IBM Plex Mono',monospace;margin-top:8px">{{ detail.first }}</div></div>
+                  <div style="flex:1;background:#e9e7e2;padding:12px 0 12px 12px"><div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">LAST</div><div style="font:500 16px/1 'IBM Plex Mono',monospace;margin-top:8px">{{ detail.last }}</div></div>
+                  <div style="flex:1;background:#e9e7e2;padding:12px 0 12px 12px"><div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">LONGEST GAP</div><div style="font:500 16px/1 'IBM Plex Mono',monospace;margin-top:8px">{{ detail.longest }}</div></div>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880;margin-top:24px;border-top:1px solid #17171a;padding:10px 0 4px">
+                  <span>EVERY CUP</span><span>RUNNING</span>
+                </div>
+                <div style="flex:1;overflow:auto;min-height:0;padding-bottom:20px">
+                  <sc-for list="{{ detail.entries }}" as="e" hint-placeholder-count="8">
+                    <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #d6d3cc">
+                      <span style="font:500 14px/1 'IBM Plex Mono',monospace;width:52px">{{ e.t }}</span>
+                      <span style="width:9px;height:9px;background:{{ e.dot }}"></span>
+                      <span style="flex:1;font:400 13px/1 'IBM Plex Mono',monospace;color:#a8a5a0">cup {{ e.n }}</span>
+                      <span style="font:500 13px/1 'IBM Plex Mono',monospace;color:#6c6a64">{{ e.running }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;left:24px;right:24px;bottom:118px;background:#17171a;color:#e9e7e2;padding:13px 15px;font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;display:flex;justify-content:space-between;align-items:center;z-index:70">
+                <span>{{ toast }}</span><span style="color:#f25c1f">●</span>
+              </div>
+            </sc-if>
+
+            <div style="display:flex;border-top:1px solid #17171a;background:#e9e7e2;padding:14px 0 34px">
+              <button onClick="{{ goToday }}" style="flex:1;background:transparent;border:0;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:{{ tabToday }};cursor:pointer;padding:6px 0">TODAY</button>
+              <button onClick="{{ goDays }}" style="flex:1;background:transparent;border:0;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:{{ tabDays }};cursor:pointer;padding:6px 0">DAYS</button>
+              <button onClick="{{ goAlerts }}" style="flex:1;background:transparent;border:0;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:{{ tabAlerts }};cursor:pointer;padding:6px 0">ALERTS</button>
+              <button onClick="{{ goSetup }}" style="flex:1;background:transparent;border:0;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:{{ tabSetup }};cursor:pointer;padding:6px 0">SETUP</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+    </div>
+  </div>
+  <p class="dv-next">Try next: "add an onboarding that sets the goal" · "make the goal moment louder" · "show the lock-screen widget and notification"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Home screen — three directions</span></div>
+  <p class="dv-note" style="margin:0 0 26px">One cup = <b>250 ml</b>, goal <b>8 cups / 2 L</b>, no other sizes. Tap the primary control to log; hold to undo. Every direction keeps the day as a <b>stacked timeline</b>. Type is Archivo + IBM Plex Mono; one accent (Braun orange) doing real work only. Pick a direction and I'll build the full flow — log, history &amp; streaks, reminders, settings.</p>
+  <div class="dv-opts">
+
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Ledger — hairline grid, one huge numeral, the day as a receipt. The by-the-book Rams read.</div>
+      <div class="dv-card">
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="height:100%;background:#e9e7e2;color:#17171a;padding:58px 24px 0;box-sizing:border-box;display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880">
+              <span>TODAY · SAT 08 AUG</span><span>250 ML / CUP</span>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:10px;margin-top:26px">
+              <div style="font:600 118px/.82 Archivo,sans-serif;letter-spacing:-.05em">06</div>
+              <div style="font:500 26px/1 Archivo,sans-serif;color:#a8a5a0;padding-bottom:9px">/ 08</div>
+            </div>
+            <div style="font:400 13px/1 'IBM Plex Mono',monospace;color:#6c6a64;margin-top:12px">1.50 L logged · 0.50 L to go</div>
+            <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:20px">
+              <div style="height:26px;background:#17171a"></div>
+              <div style="height:26px;background:#17171a"></div>
+              <div style="height:26px;background:#17171a"></div>
+              <div style="height:26px;background:#17171a"></div>
+              <div style="height:26px;background:#17171a"></div>
+              <div style="height:26px;background:#17171a"></div>
+              <div style="height:26px;border:1px solid #bfbcb5;box-sizing:border-box"></div>
+              <div style="height:26px;border:1px solid #bfbcb5;box-sizing:border-box"></div>
+            </div>
+            <div style="height:1px;background:#17171a;margin:26px 0 0"></div>
+            <div style="display:flex;justify-content:space-between;font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8b8880;padding:10px 0 8px">
+              <span>LOG</span><span>RUNNING</span>
+            </div>
+            <div style="display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid #d6d3cc">
+                <span style="font:500 14px/1 'IBM Plex Mono',monospace;width:52px">06:40</span>
+                <span style="width:9px;height:9px;background:#17171a"></span>
+                <span style="flex:1;font:400 14px/1 Archivo,sans-serif;color:#6c6a64">first of the day</span>
+                <span style="font:500 13px/1 'IBM Plex Mono',monospace;color:#a8a5a0">0.25</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid #d6d3cc">
+                <span style="font:500 14px/1 'IBM Plex Mono',monospace;width:52px">07:15</span>
+                <span style="width:9px;height:9px;background:#17171a"></span>
+                <span style="flex:1"></span>
+                <span style="font:500 13px/1 'IBM Plex Mono',monospace;color:#a8a5a0">0.50</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid #d6d3cc">
+                <span style="font:500 14px/1 'IBM Plex Mono',monospace;width:52px">09:20</span>
+                <span style="width:9px;height:9px;background:#17171a"></span>
+                <span style="flex:1"></span>
+                <span style="font:500 13px/1 'IBM Plex Mono',monospace;color:#a8a5a0">0.75</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid #d6d3cc">
+                <span style="font:500 14px/1 'IBM Plex Mono',monospace;width:52px">11:05</span>
+                <span style="width:9px;height:9px;background:#17171a"></span>
+                <span style="flex:1"></span>
+                <span style="font:500 13px/1 'IBM Plex Mono',monospace;color:#a8a5a0">1.00</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid #d6d3cc">
+                <span style="font:500 14px/1 'IBM Plex Mono',monospace;width:52px">12:30</span>
+                <span style="width:9px;height:9px;background:#17171a"></span>
+                <span style="flex:1;font:400 14px/1 Archivo,sans-serif;color:#6c6a64">with lunch</span>
+                <span style="font:500 13px/1 'IBM Plex Mono',monospace;color:#a8a5a0">1.25</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-top:1px solid #d6d3cc;border-bottom:1px solid #d6d3cc">
+                <span style="font:500 14px/1 'IBM Plex Mono',monospace;width:52px">14:10</span>
+                <span style="width:9px;height:9px;background:#f25c1f"></span>
+                <span style="flex:1;font:400 14px/1 Archivo,sans-serif;color:#6c6a64">40 min ago</span>
+                <span style="font:500 13px/1 'IBM Plex Mono',monospace;color:#17171a">1.50</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #e4e1da">
+                <span style="font:400 14px/1 'IBM Plex Mono',monospace;width:52px;color:#c2bfb8">07</span>
+                <span style="width:9px;height:9px;border:1px solid #c2bfb8;box-sizing:border-box"></span>
+                <span style="flex:1;font:400 14px/1 Archivo,sans-serif;color:#c2bfb8">to come</span>
+                <span style="font:400 13px/1 'IBM Plex Mono',monospace;color:#c2bfb8">1.75</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #e4e1da">
+                <span style="font:400 14px/1 'IBM Plex Mono',monospace;width:52px;color:#c2bfb8">08</span>
+                <span style="width:9px;height:9px;border:1px solid #c2bfb8;box-sizing:border-box"></span>
+                <span style="flex:1;font:400 14px/1 Archivo,sans-serif;color:#c2bfb8">goal</span>
+                <span style="font:400 13px/1 'IBM Plex Mono',monospace;color:#c2bfb8">2.00</span>
+              </div>
+            </div>
+            <div style="margin-top:auto;padding-bottom:26px">
+              <button style="width:100%;height:60px;background:#f25c1f;color:#fff;border:0;border-radius:3px;font:600 15px/1 Archivo,sans-serif;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;gap:10px" style-hover="background:#d94d13">
+                <span style="font-size:22px;font-weight:400;line-height:1">+</span>ONE CUP
+              </button>
+              <div style="text-align:center;font:400 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#a8a5a0;margin-top:11px">HOLD TO UNDO LAST</div>
+            </div>
+          </div>
+        </x-import>
+      </div>
+    </div>
+
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Unit — the phone as a small appliance. LCD readout, 24-hour reel, one hard button. Most Teenage Engineering.</div>
+      <div class="dv-card">
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="height:100%;background:#c9c7c1;color:#17171a;padding:58px 20px 0;box-sizing:border-box;display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font:600 11px/1 'IBM Plex Mono',monospace;letter-spacing:.2em">H2O–8</div>
+              <div style="display:flex;align-items:center;gap:7px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:#6c6a64">
+                <span style="width:7px;height:7px;border-radius:50%;background:#f25c1f;box-shadow:0 0 6px rgba(242,92,31,.8)"></span>ON
+              </div>
+            </div>
+
+            <div style="margin-top:18px;background:#1e211c;border-radius:10px;padding:22px 20px 18px;box-shadow:inset 0 2px 6px rgba(0,0,0,.6)">
+              <div style="display:flex;justify-content:space-between;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;color:#6f7a68">
+                <span>CUPS TODAY</span><span>SAT 08.08</span>
+              </div>
+              <div style="display:flex;align-items:flex-end;gap:8px;margin-top:14px;color:#c3ff6a">
+                <div style="font:600 92px/.8 'IBM Plex Mono',monospace;letter-spacing:-.04em">06</div>
+                <div style="font:500 22px/1 'IBM Plex Mono',monospace;color:#5f7a4a;padding-bottom:6px">/08</div>
+                <div style="flex:1"></div>
+                <div style="text-align:right;font:500 11px/1.5 'IBM Plex Mono',monospace;color:#7d9a63">1.50 L<br>2 TO GO</div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:20px">
+                <div style="height:14px;background:#c3ff6a"></div>
+                <div style="height:14px;background:#c3ff6a"></div>
+                <div style="height:14px;background:#c3ff6a"></div>
+                <div style="height:14px;background:#c3ff6a"></div>
+                <div style="height:14px;background:#c3ff6a"></div>
+                <div style="height:14px;background:#c3ff6a"></div>
+                <div style="height:14px;background:#31371f"></div>
+                <div style="height:14px;background:#31371f"></div>
+              </div>
+            </div>
+
+            <div style="margin-top:22px">
+              <div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;color:#6c6a64;margin-bottom:10px">DAY REEL · 06 → 22</div>
+              <div style="display:flex;align-items:flex-end;gap:3px;height:72px;border-bottom:1px solid #17171a;padding-bottom:0">
+                <div style="flex:1;height:10px;background:#a8a5a0"></div>
+                <div style="flex:1;height:56px;background:#17171a"></div>
+                <div style="flex:1;height:56px;background:#17171a"></div>
+                <div style="flex:1;height:10px;background:#a8a5a0"></div>
+                <div style="flex:1;height:10px;background:#a8a5a0"></div>
+                <div style="flex:1;height:56px;background:#17171a"></div>
+                <div style="flex:1;height:10px;background:#a8a5a0"></div>
+                <div style="flex:1;height:56px;background:#17171a"></div>
+                <div style="flex:1;height:10px;background:#a8a5a0"></div>
+                <div style="flex:1;height:56px;background:#17171a"></div>
+                <div style="flex:1;height:10px;background:#a8a5a0"></div>
+                <div style="flex:1;height:72px;background:#f25c1f"></div>
+                <div style="flex:1;height:10px;background:#a8a5a0"></div>
+                <div style="flex:1;height:10px;background:#a8a5a0"></div>
+                <div style="flex:1;height:10px;background:#d6d3cc"></div>
+                <div style="flex:1;height:10px;background:#d6d3cc"></div>
+                <div style="flex:1;height:10px;background:#d6d3cc"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font:400 9px/1 'IBM Plex Mono',monospace;color:#8b8880;margin-top:8px">
+                <span>06</span><span>10</span><span>14</span><span>18</span><span>22</span>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;display:flex;flex-direction:column;gap:1px;background:#b6b3ad">
+              <div style="display:flex;justify-content:space-between;align-items:center;background:#c9c7c1;padding:12px 2px;font:500 12px/1 'IBM Plex Mono',monospace">
+                <span>14:10</span><span style="color:#6c6a64;font-family:Archivo,sans-serif;font-size:13px">cup 06 · 40 min ago</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;background:#c9c7c1;padding:12px 2px;font:500 12px/1 'IBM Plex Mono',monospace">
+                <span>12:30</span><span style="color:#6c6a64;font-family:Archivo,sans-serif;font-size:13px">cup 05 · with lunch</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;background:#c9c7c1;padding:12px 2px;font:500 12px/1 'IBM Plex Mono',monospace">
+                <span>11:05</span><span style="color:#6c6a64;font-family:Archivo,sans-serif;font-size:13px">cup 04</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;background:#c9c7c1;padding:12px 2px;font:500 12px/1 'IBM Plex Mono',monospace">
+                <span>09:20</span><span style="color:#6c6a64;font-family:Archivo,sans-serif;font-size:13px">cup 03</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;background:#c9c7c1;padding:12px 2px;font:500 12px/1 'IBM Plex Mono',monospace">
+                <span>07:15</span><span style="color:#6c6a64;font-family:Archivo,sans-serif;font-size:13px">cup 02</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;background:#c9c7c1;padding:12px 2px;font:500 12px/1 'IBM Plex Mono',monospace">
+                <span>06:40</span><span style="color:#6c6a64;font-family:Archivo,sans-serif;font-size:13px">cup 01 · first of the day</span>
+              </div>
+            </div>
+
+            <div style="margin-top:auto;padding:16px 0 26px;display:flex;align-items:center;gap:14px">
+              <button style="width:52px;height:52px;border-radius:50%;border:1px solid #17171a;background:transparent;color:#17171a;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.1em" style-hover="background:#17171a;color:#c9c7c1">UNDO</button>
+              <button style="width:52px;height:52px;border-radius:50%;border:1px solid #17171a;background:transparent;color:#17171a;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.1em" style-hover="background:#17171a;color:#c9c7c1">DAYS</button>
+              <div style="flex:1"></div>
+              <button style="width:104px;height:104px;border-radius:50%;background:#f25c1f;border:0;color:#fff;font:600 12px/1.5 'IBM Plex Mono',monospace;letter-spacing:.1em;box-shadow:0 6px 0 #a83c0e" style-hover="background:#d94d13" style-active="box-shadow:0 2px 0 #a83c0e;transform:translateY(4px)">+1<br>CUP</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+    </div>
+
+    <div class="dv-opt" id="1c">
+      <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span>Column — the timeline is the water level. Cups stack up a single rail, notes hang off it. Quietest of the three.</span></div>
+      <div class="dv-card">
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+          <div style="height:100%;background:#fbfaf8;color:#17171a;padding:58px 0 0;box-sizing:border-box;display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 26px">
+              <div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:#8b8880">SAT 08 AUG</div>
+              <div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:#8b8880">GOAL 8 × 250 ML</div>
+            </div>
+            <div style="padding:22px 26px 0;font:400 22px/1.35 Archivo,sans-serif;letter-spacing:-.01em;max-width:280px">Six cups down.<br><span style="color:#a8a5a0">Two to go.</span></div>
+
+            <div style="flex:1;display:flex;padding:26px 26px 0;gap:20px;min-height:0">
+              <div style="width:56px;display:flex;flex-direction:column-reverse;gap:3px">
+                <div style="flex:1;background:#17171a"></div>
+                <div style="flex:1;background:#17171a"></div>
+                <div style="flex:1;background:#17171a"></div>
+                <div style="flex:1;background:#17171a"></div>
+                <div style="flex:1;background:#17171a"></div>
+                <div style="flex:1;background:#f25c1f"></div>
+                <div style="flex:1;border:1px solid #e0ddd6;box-sizing:border-box"></div>
+                <div style="flex:1;border:1px solid #e0ddd6;box-sizing:border-box"></div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column-reverse;gap:3px">
+                <div style="flex:1;display:flex;align-items:center;gap:12px"><span style="font:500 13px/1 'IBM Plex Mono',monospace;width:48px">06:40</span><span style="font:400 14px/1 Archivo,sans-serif;color:#8b8880">on waking</span></div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px"><span style="font:500 13px/1 'IBM Plex Mono',monospace;width:48px">07:15</span></div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px"><span style="font:500 13px/1 'IBM Plex Mono',monospace;width:48px">09:20</span></div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px"><span style="font:500 13px/1 'IBM Plex Mono',monospace;width:48px">11:05</span></div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px"><span style="font:500 13px/1 'IBM Plex Mono',monospace;width:48px">12:30</span><span style="font:400 14px/1 Archivo,sans-serif;color:#8b8880">with lunch</span></div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px"><span style="font:500 13px/1 'IBM Plex Mono',monospace;width:48px;color:#f25c1f">14:10</span><span style="font:400 14px/1 Archivo,sans-serif;color:#f25c1f">40 min ago</span></div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px"><span style="font:400 13px/1 'IBM Plex Mono',monospace;width:48px;color:#c9c6bf">07</span></div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px"><span style="font:400 13px/1 'IBM Plex Mono',monospace;width:48px;color:#c9c6bf">08</span></div>
+              </div>
+            </div>
+
+            <div style="padding:22px 26px 26px;display:flex;align-items:center;gap:12px;border-top:1px solid #eceae5;margin-top:18px">
+              <button style="flex:1;height:58px;background:#17171a;color:#fbfaf8;border:0;border-radius:29px;font:500 15px/1 Archivo,sans-serif;letter-spacing:.02em" style-hover="background:#000">Log a cup</button>
+              <button style="width:58px;height:58px;border-radius:29px;border:1px solid #dedbd4;background:transparent;color:#17171a;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.1em" style-hover="border-color:#17171a">UNDO</button>
+            </div>
+          </div>
+        </x-import>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "build the full flow from <a class="dv-oid" href="#1b">1b</a>" · "<a class="dv-oid" href="#1a">1a</a> but with the reel from <a class="dv-oid" href="#1b">1b</a>" · "make <a class="dv-oid" href="#1c">1c</a> celebrate harder past 8"</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;goalCups&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:8,&quot;min&quot;:4,&quot;max&quot;:16,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Goal&quot;},&quot;cupMl&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:250,&quot;min&quot;:150,&quot;max&quot;:600,&quot;step&quot;:50,&quot;unit&quot;:&quot;ml&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Goal&quot;},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#f25c1f&quot;,&quot;options&quot;:[&quot;#f25c1f&quot;,&quot;#17171a&quot;,&quot;#2b6cc4&quot;,&quot;#c3ff6a&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Style&quot;}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'today',
+    log: [
+      { t: '06:40', note: 'first of the day' },
+      { t: '07:15', note: '' },
+      { t: '09:20', note: '' },
+      { t: '11:05', note: '' },
+      { t: '12:30', note: 'with lunch' },
+      { t: '14:10', note: '' }
+    ],
+    toast: null,
+    celebrated: false,
+    reminders: [
+      { t: '07:00', label: 'on waking', on: true },
+      { t: '10:00', label: 'mid-morning', on: true },
+      { t: '12:30', label: 'with lunch', on: true },
+      { t: '15:00', label: 'afternoon', on: true },
+      { t: '18:00', label: 'evening', on: false }
+    ],
+    smart: true,
+    sound: false,
+    weekOffset: 0,
+    dayView: null
+  };
+
+  // weekOffset 0 = current week (Mon 03 – Sun 09 Aug 2026); counts null = not yet
+  WEEKS = [
+    { label: '03 – 09 AUG', days: [[3,8,'AUG'],[4,9,'AUG'],[5,6,'AUG'],[6,8,'AUG'],[7,15,'AUG'],[8,null,'AUG'],[9,null,'AUG']] },
+    { label: '27 JUL – 02 AUG', days: [[27,9,'JUL'],[28,8,'JUL'],[29,8,'JUL'],[30,5,'JUL'],[31,9,'JUL'],[1,11,'AUG'],[2,8,'AUG']] },
+    { label: '20 – 26 JUL', days: [[20,8,'JUL'],[21,7,'JUL'],[22,8,'JUL'],[23,8,'JUL'],[24,6,'JUL'],[25,10,'JUL'],[26,9,'JUL']] },
+    { label: '13 – 19 JUL', days: [[13,6,'JUL'],[14,8,'JUL'],[15,8,'JUL'],[16,4,'JUL'],[17,7,'JUL'],[18,8,'JUL'],[19,8,'JUL']] }
+  ];
+  DAY_NAMES = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+  // deterministic pseudo-schedule for past days
+  dayTimes(seed, count) {
+    if (!count) return [];
+    const start = 6 * 60 + 20 + (seed % 3) * 15;   // ~06:20–07:05
+    const end = 21 * 60 + 10 - (seed % 4) * 12;    // ~20:22–21:10
+    const span = end - start;
+    const out = [];
+    for (let i = 0; i < count; i++) {
+      const base = start + Math.round((span * i) / Math.max(count - 1, 1));
+      const jitter = ((seed * (i + 5)) % 23) - 11;
+      const t = Math.max(start, Math.min(end, base + jitter));
+      out.push(String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0'));
+    }
+    return out;
+  }
+
+  // chronological flat index across all weeks: 0 = oldest day
+  flatIndex(weekOffset, i) { return (this.WEEKS.length - 1 - weekOffset) * 7 + i; }
+  flatDay(f) {
+    const weekOffset = this.WEEKS.length - 1 - Math.floor(f / 7);
+    return { weekOffset: weekOffset, i: f % 7, pair: (this.WEEKS[weekOffset] || { days: [] }).days[f % 7] };
+  }
+  lastLoggedFlat() {
+    let last = 0;
+    for (let f = 0; f < this.WEEKS.length * 7; f++) {
+      const d = this.flatDay(f);
+      if (d.pair && (d.pair[1] !== null || (d.weekOffset === 0 && d.pair[0] === 8))) last = f;
+    }
+    return last;
+  }
+
+  openDay(i) { return () => this.setState({ dayView: this.flatIndex(this.state.weekOffset, i) }); }
+  closeDay = () => this.setState({ dayView: null });
+  stepDay(d) {
+    return () => this.setState(s => {
+      const f = s.dayView + d;
+      if (f < 0 || f > this.lastLoggedFlat()) return null;
+      return { dayView: f, weekOffset: this.flatDay(f).weekOffset };
+    });
+  }
+
+  stepWeek(d) {
+    return () => this.setState(s => {
+      const n = s.weekOffset + d;
+      if (n < 0 || n > this.WEEKS.length - 1) return null;
+      return { weekOffset: n };
+    });
+  }
+
+  goal() { return this.props.goalCups ?? 8; }
+  ml() { return this.props.cupMl ?? 250; }
+  accent() { return this.props.accentColor ?? '#f25c1f'; }
+
+  litres(n) { return ((n * this.ml()) / 1000).toFixed(2); }
+
+  nowLabel() {
+    const d = new Date();
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  flash(msg) {
+    clearTimeout(this._tid);
+    this.setState({ toast: msg });
+    this._tid = setTimeout(() => this.setState({ toast: null }), 2200);
+  }
+
+  addCup = () => {
+    if (this._didHold) { this._didHold = false; return; }
+    const log = this.state.log.concat([{ t: this.nowLabel(), note: 'just now' }]);
+    const hitGoal = log.length === this.goal();
+    const over = log.length > this.goal();
+    this.setState({ log, celebrated: hitGoal || this.state.celebrated });
+    if (hitGoal) this.flash('GOAL · ' + this.litres(log.length) + ' L · nice one');
+    else if (over) this.flash('CUP ' + String(log.length).padStart(2, '0') + ' · bonus');
+    else this.flash('CUP ' + String(log.length).padStart(2, '0') + ' LOGGED');
+  };
+
+  undo = () => {
+    if (!this.state.log.length) return;
+    const log = this.state.log.slice(0, -1);
+    this.setState({ log, celebrated: log.length >= this.goal() && this.state.celebrated });
+    this.flash('LAST CUP REMOVED');
+  };
+
+  holdStart = () => {
+    this._didHold = false;
+    this._hold = setTimeout(() => { this._didHold = true; this.undo(); }, 550);
+  };
+  holdEnd = () => { clearTimeout(this._hold); };
+
+  go(screen) { return () => this.setState({ screen }); }
+
+  toggleReminder(i) {
+    return () => this.setState(s => ({
+      reminders: s.reminders.map((r, j) => j === i ? Object.assign({}, r, { on: !r.on }) : r)
+    }));
+  }
+
+  renderVals() {
+    const goal = this.goal(), accent = this.accent();
+    const n = this.state.log.length;
+    const done = n >= goal;
+
+    const rows = this.state.log.map((e, i) => ({
+      t: e.t,
+      note: i === this.state.log.length - 1 ? (e.note || 'just now') : e.note,
+      running: this.litres(i + 1),
+      dot: i === this.state.log.length - 1 ? accent : '#17171a',
+      runColor: i === this.state.log.length - 1 ? '#17171a' : '#a8a5a0',
+      bonus: i + 1 > goal
+    }));
+    const ghosts = [];
+    for (let i = n; i < goal; i++) {
+      ghosts.push({ label: String(i + 1).padStart(2, '0'), running: this.litres(i + 1), note: i + 1 === goal ? 'goal' : 'to come' });
+    }
+
+    const segments = [];
+    for (let i = 0; i < Math.max(goal, n); i++) {
+      const filled = i < n;
+      const bonus = i >= goal;
+      segments.push({
+        bg: filled ? (bonus ? accent : '#17171a') : 'transparent',
+        bd: filled ? (bonus ? accent : '#17171a') : '#bfbcb5'
+      });
+    }
+
+    const letters = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const wk = this.WEEKS[this.state.weekOffset];
+    const isThisWeek = this.state.weekOffset === 0;
+    const week = wk.days.map((pair, i) => {
+      const isTodayCol = isThisWeek && pair[0] === 8;
+      const c = isTodayCol ? n : pair[1];
+      const future = c === null;
+      const max = Math.max(12, goal + 2);
+      return {
+        d: letters[i], day: String(pair[0]).padStart(2, '0'),
+        c: future ? '–' : c,
+        h: future ? '2px' : Math.max(Math.round(Math.min(c / max, 1) * 118), 3) + 'px',
+        bg: future ? '#d6d3cc' : (c >= goal ? '#17171a' : '#c2bfb8'),
+        fg: future ? '#c2bfb8' : (c >= goal ? '#17171a' : '#a8a5a0'),
+        dayFg: (isThisWeek && pair[0] === 8) ? accent : '#8b8880',
+        open: future ? null : this.openDay(i),
+        cursor: future ? 'default' : 'pointer'
+      };
+    });
+    // ── day detail ──
+    let detail = null;
+    const dv = this.state.dayView;
+    const dvInfo = dv !== null ? this.flatDay(dv) : null;
+    const dvPair = dvInfo ? dvInfo.pair : null;
+    const dvLive = !!dvPair && dvInfo.weekOffset === 0 && dvPair[0] === 8;
+    if (dvPair && (dvLive || dvPair[1] !== null)) {
+      const pair = dvPair;
+      const live = dvLive;
+      const times = live ? this.state.log.map(e => e.t) : this.dayTimes(pair[0], pair[1]);
+      const dc = times.length;
+      const hours = [];
+      for (let h = 0; h < 24; h++) {
+        const inHour = times.filter(t => parseInt(t.slice(0, 2), 10) === h).length;
+        hours.push({
+          h: h,
+          tall: inHour ? Math.min(inHour, 3) * 22 + 14 + 'px' : '6px',
+          bg: inHour ? (live ? accent : '#17171a') : (h < 6 || h > 22 ? '#e0ddd6' : '#cfccc5')
+        });
+      }
+      const longest = (() => {
+        let g = 0, gi = 0;
+        for (let i = 1; i < times.length; i++) {
+          const a = parseInt(times[i - 1].slice(0, 2), 10) * 60 + parseInt(times[i - 1].slice(3), 10);
+          const b = parseInt(times[i].slice(0, 2), 10) * 60 + parseInt(times[i].slice(3), 10);
+          if (b - a > g) { g = b - a; gi = i; }
+        }
+        return g ? Math.floor(g / 60) + 'h ' + (g % 60) + 'm' : '–';
+      })();
+      const lastF = this.lastLoggedFlat();
+      detail = {
+        name: this.DAY_NAMES[dvInfo.i],
+        prev: this.stepDay(-1),
+        next: this.stepDay(1),
+        prevColor: dv > 0 ? '#17171a' : '#c9c6bf',
+        nextColor: dv < lastF ? '#17171a' : '#c9c6bf',
+        date: String(pair[0]).padStart(2, '0') + ' ' + pair[2],
+        live: live,
+        liveLabel: live ? 'TODAY · IN PROGRESS' : 'CLOSED',
+        count: String(dc).padStart(2, '0'),
+        goalLabel: String(goal).padStart(2, '0'),
+        litres: this.litres(dc),
+        met: dc >= goal ? (dc > goal ? (dc - goal) + ' past goal' : 'goal met') : (goal - dc) + ' short',
+        metColor: dc >= goal ? '#17171a' : '#a8a5a0',
+        first: times[0] || '–',
+        last: times[times.length - 1] || '–',
+        longest: longest,
+        hours: hours,
+        entries: times.map((t, i) => ({
+          t: t,
+          n: String(i + 1).padStart(2, '0'),
+          running: this.litres(i + 1),
+          dot: i + 1 > goal ? accent : '#17171a'
+        }))
+      };
+    }
+
+    const logged = week.filter(w => w.c !== '–');
+    const weekTotal = logged.reduce((a, w) => a + w.c, 0);
+    const atGoal = logged.filter(w => w.c >= goal).length;
+
+    return {
+      screen: this.state.screen,
+      isToday: this.state.screen === 'today',
+      isDays: this.state.screen === 'days',
+      isAlerts: this.state.screen === 'alerts',
+      isSetup: this.state.screen === 'setup',
+      goal, goalLabel: String(goal).padStart(2, '0'),
+      count: String(n).padStart(2, '0'),
+      litres: this.litres(n),
+      goalLitres: this.litres(goal),
+      remaining: done
+        ? (n > goal ? (n - goal) + ' cup' + (n - goal === 1 ? '' : 's') + ' past goal' : 'goal met')
+        : this.litres(goal - n) + ' L to go',
+      headline: done ? (n > goal ? 'Past goal. Keep going.' : 'Goal met. ' + this.goalLitres + ' L.') : null,
+      done, rows, ghosts, segments, week,
+      weekLabel: wk.label,
+      weekYear: this.state.weekOffset === 0 ? 'THIS WEEK · 2026' : String(this.state.weekOffset) + ' WEEK' + (this.state.weekOffset === 1 ? '' : 'S') + ' AGO · 2026',
+      weekTotal: weekTotal + ' cups',
+      weekCups: String(weekTotal),
+      weekLitres: this.litres(weekTotal) + ' L',
+      weekAvg: logged.length ? (weekTotal / logged.length).toFixed(1) : '0.0',
+      weekAtGoal: atGoal + ' / ' + logged.length,
+      detail: detail,
+      hasDetail: !!detail && this.state.screen === 'days',
+      closeDay: this.closeDay,
+      prevWeek: this.stepWeek(1),
+      nextWeek: this.stepWeek(-1),
+      prevColor: this.state.weekOffset < this.WEEKS.length - 1 ? '#17171a' : '#c9c6bf',
+      nextColor: this.state.weekOffset > 0 ? '#17171a' : '#c9c6bf',
+      accent,
+      cupMl: this.ml(),
+      toast: this.state.toast,
+      hasToast: !!this.state.toast,
+      reminders: this.state.reminders.map((r, i) => ({
+        t: r.t, label: r.label,
+        knob: r.on ? 'flex-end' : 'flex-start',
+        track: r.on ? '#17171a' : '#d6d3cc',
+        toggle: this.toggleReminder(i)
+      })),
+      smartTrack: this.state.smart ? '#17171a' : '#d6d3cc',
+      smartKnob: this.state.smart ? 'flex-end' : 'flex-start',
+      toggleSmart: () => this.setState(s => ({ smart: !s.smart })),
+      soundTrack: this.state.sound ? '#17171a' : '#d6d3cc',
+      soundKnob: this.state.sound ? 'flex-end' : 'flex-start',
+      toggleSound: () => this.setState(s => ({ sound: !s.sound })),
+      addCup: this.addCup,
+      undo: this.undo,
+      holdStart: this.holdStart,
+      holdEnd: this.holdEnd,
+      goToday: this.go('today'),
+      goDays: this.go('days'),
+      goAlerts: this.go('alerts'),
+      goSetup: this.go('setup'),
+      tabToday: this.state.screen === 'today' ? '#17171a' : '#a8a5a0',
+      tabDays: this.state.screen === 'days' ? '#17171a' : '#a8a5a0',
+      tabAlerts: this.state.screen === 'alerts' ? '#17171a' : '#a8a5a0',
+      tabSetup: this.state.screen === 'setup' ? '#17171a' : '#a8a5a0'
+    };
+  }
+}
+</script>
+</body>
+</html>

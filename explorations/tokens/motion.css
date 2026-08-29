@@ -1,0 +1,9 @@
+:root {
+  /* Motion is almost absent by design: state changes are instant, the only
+     movement is a toast appearing and the button's 4px press. */
+  --dur-fast: 90ms;
+  --dur-toast: 2200ms;        /* how long a toast stays, not a transition */
+  --ease-standard: linear;
+  --press-shift: 4px;
+  --hover-dim: 0.62;          /* opacity used for tappable chart columns */
+}

@@ -1,0 +1,29 @@
+:root {
+  --font-sans: Archivo, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  /* weights actually used — nothing heavier than 600 */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* display numerals: the count is the largest thing on any screen */
+  --type-numeral: var(--weight-semibold) 108px/0.82 var(--font-sans);
+  --type-numeral-sm: var(--weight-semibold) 68px/0.82 var(--font-sans);
+  --type-display: var(--weight-semibold) 40px/1 var(--font-sans);
+  --type-title: var(--weight-regular) 22px/1.35 var(--font-sans);
+  --type-body: var(--weight-regular) 14px/1.3 var(--font-sans);
+  --type-body-sm: var(--weight-regular) 13px/1.6 var(--font-sans);
+
+  /* mono carries all data, times, and labels */
+  --type-data: var(--weight-medium) 14px/1 var(--font-mono);
+  --type-data-sm: var(--weight-medium) 13px/1 var(--font-mono);
+  --type-label: var(--weight-medium) 10px/1 var(--font-mono);
+  --type-label-xs: var(--weight-medium) 9.5px/1 var(--font-mono);
+  --type-axis: var(--weight-regular) 9px/1 var(--font-mono);
+
+  --tracking-numeral: -0.05em;
+  --tracking-display: -0.03em;
+  --tracking-label: 0.14em;   /* every uppercase mono label gets this */
+  --tracking-label-wide: 0.2em;
+}

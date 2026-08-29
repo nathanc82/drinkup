@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#dedbd4;-webkit-font-smoothing:antialiased}
+  a{color:#f25c1f}a:hover{color:#a83c0e}
+  @keyframes flourishRing{from{transform:scale(.72);opacity:.55}to{transform:scale(1.5);opacity:0}}
+</style>
+</helmet>
+<div style="min-height:100%;display:flex;align-items:center;justify-content:center;padding:40px;font-family:Archivo,system-ui,sans-serif">
+  <div style="position:relative;width:390px;height:844px;background:#e9e7e2;color:#17171a;overflow:hidden;box-shadow:0 24px 60px rgba(23,23,26,.22);border:1px solid #c9c6bf">
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <filter id="siloGoo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"></feGaussianBlur>
+        <feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7.2"></feColorMatrix>
+      </filter>
+    </svg>
+
+    <div style="position:absolute;left:0;right:0;top:0;height:52px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 0 20px">
+      <button aria-label="Calendar" style="width:44px;height:44px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer;color:#6c6a64" style-hover="color:#17171a">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="5.5" width="17" height="15" rx="1.5"></rect><path d="M3.5 10.5h17M8 3.5v4M16 3.5v4"></path></svg>
+      </button>
+      <button aria-label="Daily details" style="width:44px;height:44px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer;color:#6c6a64" style-hover="color:#17171a">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 20V11M10 20V5M15 20V14M20 20V8"></path></svg>
+      </button>
+    </div>
+    <div style="position:absolute;left:20px;right:20px;top:52px;height:1px;background:#d6d3cc"></div>
+
+    <div style="position:absolute;left:51px;top:104px;width:240px;height:480px;transform:scale(1.2);transform-origin:0 0">
+      <div style="position:absolute;inset:0;clip-path:path('M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M102 96 L138 96 L138 124 L102 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z')">
+        <canvas ref="{{ canvasRef }}" width="240" height="480" style="position:absolute;inset:0;width:240px;height:480px;filter:url(#siloGoo)"></canvas>
+      </div>
+      <svg viewBox="0 0 240 480" width="240" height="480" fill="none" stroke="{{ outlineColor }}" stroke-width="2.6" stroke-linejoin="round" style="position:absolute;inset:0;overflow:visible">
+        <path d="M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z"></path>
+      </svg>
+    </div>
+
+    <div style="position:absolute;left:22px;top:0;width:32px;height:100%">
+      <button aria-label="Cup 1" onClick="{{ tap1 }}" style="position:absolute;left:0;top:526px;width:32px;height:32px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer">
+        <span style="width:11px;height:11px;border-radius:50%;border:1.4px solid #17171a;box-sizing:border-box;position:relative"><span style="position:absolute;inset:-1.4px;border-radius:50%;background:#17171a;transform:scale({{ on1 }});transition:transform .32s cubic-bezier(.2,.9,.25,1)"></span></span>
+      </button>
+      <button aria-label="Cup 2" onClick="{{ tap2 }}" style="position:absolute;left:0;top:476px;width:32px;height:32px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer">
+        <span style="width:11px;height:11px;border-radius:50%;border:1.4px solid #17171a;box-sizing:border-box;position:relative"><span style="position:absolute;inset:-1.4px;border-radius:50%;background:#17171a;transform:scale({{ on2 }});transition:transform .32s cubic-bezier(.2,.9,.25,1)"></span></span>
+      </button>
+      <button aria-label="Cup 3" onClick="{{ tap3 }}" style="position:absolute;left:0;top:427px;width:32px;height:32px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer">
+        <span style="width:11px;height:11px;border-radius:50%;border:1.4px solid #17171a;box-sizing:border-box;position:relative"><span style="position:absolute;inset:-1.4px;border-radius:50%;background:#17171a;transform:scale({{ on3 }});transition:transform .32s cubic-bezier(.2,.9,.25,1)"></span></span>
+      </button>
+      <button aria-label="Cup 4" onClick="{{ tap4 }}" style="position:absolute;left:0;top:377px;width:32px;height:32px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer">
+        <span style="width:11px;height:11px;border-radius:50%;border:1.4px solid #17171a;box-sizing:border-box;position:relative"><span style="position:absolute;inset:-1.4px;border-radius:50%;background:#17171a;transform:scale({{ on4 }});transition:transform .32s cubic-bezier(.2,.9,.25,1)"></span></span>
+      </button>
+      <button aria-label="Cup 5" onClick="{{ tap5 }}" style="position:absolute;left:0;top:328px;width:32px;height:32px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer">
+        <span style="width:11px;height:11px;border-radius:50%;border:1.4px solid #17171a;box-sizing:border-box;position:relative"><span style="position:absolute;inset:-1.4px;border-radius:50%;background:#17171a;transform:scale({{ on5 }});transition:transform .32s cubic-bezier(.2,.9,.25,1)"></span></span>
+      </button>
+      <button aria-label="Cup 6" onClick="{{ tap6 }}" style="position:absolute;left:0;top:278px;width:32px;height:32px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer">
+        <span style="width:11px;height:11px;border-radius:50%;border:1.4px solid #17171a;box-sizing:border-box;position:relative"><span style="position:absolute;inset:-1.4px;border-radius:50%;background:#17171a;transform:scale({{ on6 }});transition:transform .32s cubic-bezier(.2,.9,.25,1)"></span></span>
+      </button>
+      <button aria-label="Cup 7" onClick="{{ tap7 }}" style="position:absolute;left:0;top:228px;width:32px;height:32px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer">
+        <span style="width:11px;height:11px;border-radius:50%;border:1.4px solid #17171a;box-sizing:border-box;position:relative"><span style="position:absolute;inset:-1.4px;border-radius:50%;background:#17171a;transform:scale({{ on7 }});transition:transform .32s cubic-bezier(.2,.9,.25,1)"></span></span>
+      </button>
+      <button aria-label="Cup 8" onClick="{{ tap8 }}" style="position:absolute;left:0;top:179px;width:32px;height:32px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer">
+        <span style="width:11px;height:11px;border-radius:50%;border:1.4px solid #17171a;box-sizing:border-box;position:relative"><span style="position:absolute;inset:-1.4px;border-radius:50%;background:#17171a;transform:scale({{ on8 }});transition:transform .32s cubic-bezier(.2,.9,.25,1)"></span></span>
+      </button>
+    </div>
+
+    <div style="position:absolute;right:26px;bottom:64px;width:64px;height:64px;display:grid;place-items:center">
+      <div ref="{{ ringRef }}" style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #f25c1f;opacity:0;pointer-events:none"></div>
+      <button aria-label="Add one cup" onClick="{{ addCup }}" style="width:56px;height:56px;border-radius:50%;background:#e9e7e2;border:1.6px solid #17171a;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .16s,border-color .16s,transform .16s" style-hover="background:#17171a;color:#e9e7e2" style-active="transform:scale(.94);background:#a83c0e;border-color:#a83c0e;color:#e9e7e2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"></path></svg>
+      </button>
+    </div>
+
+    <div style="position:absolute;left:24px;bottom:70px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#8b8880">{{ hint }}</div>
+
+    <sc-if value="{{ showTiltAsk }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ tiltTap }}" style="position:absolute;left:24px;top:64px;padding:6px 10px;background:none;border:1px solid #c9c6bf;border-radius:99px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#6c6a64;cursor:pointer" style-hover="border-color:#17171a;color:#17171a">Enable tilt</button>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:470,&quot;height&quot;:924},&quot;startCups&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:0,&quot;max&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;State&quot;},&quot;accentOnGoal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;grain&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:6.5,&quot;min&quot;:4,&quot;max&quot;:9,&quot;step&quot;:0.5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Water&quot;},&quot;viscosity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.7,&quot;min&quot;:0.05,&quot;max&quot;:1.2,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Water&quot;}}">
+const BODY = "M167 58 A47 47 0 1 1 73 58 A47 47 0 1 1 167 58 Z M102 96 L138 96 L138 124 L102 124 Z M78 117 L162 117 Q194 117 195 149 L204 262 Q205 296 172 302 L164 302 L156 452 Q156 468 141 468 L99 468 Q84 468 84 452 L76 302 L68 302 Q35 296 36 262 L45 149 Q46 117 78 117 Z";
+const GOAL = 8, G = 1500;
+// waterline each cup count settles at (the 8th pours into the head)
+const TARGETS = [377, 335.7, 294.3, 253, 211.7, 170.3, 129, 40];
+// "Syrup" model from the fluid board (1c): viscous body, sticky walls, fine grain
+// stiffer than the board preset (k, substeps) so the body doesn't compress under
+// its own weight; the syrup feel comes from viscosity, damping and wall grip
+const SYRUP = { spacing: 6.5, k: 6, knear: 1.4, visc: 0.70, visc2: 0, xsph: 0.60, damp: 0.990, wallFriction: 0.85, cohesion: 0.15, sub: 3, radiusFactor: 0.86 };
+
+class Component extends DCLogic {
+  constructor(p){
+    super(p);
+    this.state = { cups: Math.max(0, Math.min(GOAL, p.startCups ?? 3)), tiltState: "wait", accent: false };
+    this.canvasRef = React.createRef();
+    this.ringRef = React.createRef();
+    this.gx = 0; this.gy = G; this.tgx = 0; this.tgy = G;
+    this.flourish = -1e9; this.gotTilt = false; this.dragging = false; this.dragX = 0;
+  }
+
+  async componentDidMount(){
+    const c = this.canvasRef.current; if(!c) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    c.width = 240 * dpr; c.height = 480 * dpr;
+    this.ctx = c.getContext("2d");
+    this.ctx.scale(dpr, dpr);
+
+    const { Fluid } = await import("./silhouette-test/fluid-lab.js");
+    if(this.dead) return;
+    this.fluid = new Fluid(BODY, { vw: 240, vh: 480, res: 1.5, params: {
+      ...SYRUP,
+      spacing: this.props.grain ?? SYRUP.spacing,
+      visc: this.props.viscosity ?? SYRUP.visc
+    } });
+    if(this.state.cups){
+      this.fluid.setFill(0.2 + this.state.cups * 0.09);
+      this.fluid.calibrateFill(TARGETS[this.state.cups - 1], G);
+    }
+    this.settled = true; this.okFrames = 0; this.pouring = false;
+
+    this.onTilt = e => {
+      if(e.gamma == null || e.beta == null) return;
+      this.gotTilt = true;
+      if(this.state.tiltState !== "on") this.setState({ tiltState: "on" });
+      const b = e.beta * Math.PI / 180, g = e.gamma * Math.PI / 180;
+      let ax = Math.sin(g), ay = Math.sin(b) * Math.cos(g);
+      const l = Math.hypot(ax, ay);
+      if(l < 0.3) ay += 0.3 - l;
+      const n = Math.hypot(ax, ay) || 1;
+      this.tgx = ax / n * G; this.tgy = ay / n * G;
+    };
+    this.onMotion = e => {
+      const a = e.accelerationIncludingGravity; if(!a || !this.fluid) return;
+      const mag = Math.hypot(a.x || 0, a.y || 0, a.z || 0);
+      if(this.lastMag != null){
+        const d = Math.abs(mag - this.lastMag);
+        if(d > 4) this.fluid.impulse(Math.min(d, 26) * 20);
+      }
+      this.lastMag = mag;
+    };
+    this.listen();
+
+    this.probe = setTimeout(() => {
+      if(this.gotTilt) return;
+      const D = window.DeviceOrientationEvent;
+      this.setState({ tiltState: D && typeof D.requestPermission === "function" ? "ask" : "drag" });
+    }, 1600);
+
+    this.onDown = e => { this.dragging = true; this.dragX = e.clientX; };
+    this.onMove = e => {
+      if(!this.dragging || this.gotTilt) return;
+      const a = Math.max(-.6, Math.min(.6, (e.clientX - this.dragX) / 300));
+      this.tgx = Math.sin(a) * G; this.tgy = Math.cos(a) * G;
+    };
+    this.onUp = () => { this.dragging = false; if(!this.gotTilt){ this.tgx = 0; this.tgy = G; } };
+    window.addEventListener("pointerdown", this.onDown);
+    window.addEventListener("pointermove", this.onMove);
+    window.addEventListener("pointerup", this.onUp);
+    window.addEventListener("pointercancel", this.onUp);
+
+    this.last = performance.now();
+    const loop = now => { this.raf = requestAnimationFrame(loop); this.draw(now); };
+    this.raf = requestAnimationFrame(loop);
+  }
+
+  listen(){
+    window.addEventListener("deviceorientation", this.onTilt);
+    window.addEventListener("deviceorientationabsolute", this.onTilt);
+    window.addEventListener("devicemotion", this.onMotion);
+  }
+
+  askTilt = () => {
+    const asks = [];
+    if(window.DeviceOrientationEvent?.requestPermission) asks.push(DeviceOrientationEvent.requestPermission());
+    if(window.DeviceMotionEvent?.requestPermission) asks.push(DeviceMotionEvent.requestPermission());
+    Promise.all(asks).then(rs => {
+      if(rs.length && rs.every(r => r === "granted")){ this.listen(); this.setState({ tiltState: "wait" }); }
+      else this.setState({ tiltState: "drag" });
+    }).catch(() => this.setState({ tiltState: "drag" }));
+  };
+
+  componentWillUnmount(){
+    this.dead = true;
+    cancelAnimationFrame(this.raf); clearTimeout(this.probe);
+    window.removeEventListener("deviceorientation", this.onTilt);
+    window.removeEventListener("deviceorientationabsolute", this.onTilt);
+    window.removeEventListener("devicemotion", this.onMotion);
+    window.removeEventListener("pointerdown", this.onDown);
+    window.removeEventListener("pointermove", this.onMove);
+    window.removeEventListener("pointerup", this.onUp);
+    window.removeEventListener("pointercancel", this.onUp);
+  }
+
+  draw(now){
+    if(!this.fluid || !this.ctx) return;
+    let dt = (now - this.last) / 1000; this.last = now;
+    dt = Math.max(1 / 240, Math.min(dt, 1 / 30));
+    this.gx += (this.tgx - this.gx) * .14; // gravity only — no idle drift
+    this.gy += (this.tgy - this.gy) * .14;
+    this.fluid.step(dt, this.gx, this.gy);
+    this.regulate();
+
+    const accent = (this.props.accentOnGoal ?? true) && now - this.flourish < 1100;
+    if(accent !== this.state.accent) this.setState({ accent });
+    this.ctx.clearRect(0, 0, 240, 480);
+    this.fluid.drawDiscs(this.ctx, accent ? "#f25c1f" : "#17171a");
+  }
+
+  // Volume chases the cup's waterline a few particles per frame — a pour at the
+  // mouth on the way up — then LATCHES: once the level is there the sim is left
+  // alone, so the water goes still instead of being stirred every frame.
+  regulate(){
+    const c = this.state.cups;
+    if(!this.fluid || this.settled) return;
+    if(!c){
+      if(this.fluid.n) this.fluid.setCount(Math.max(0, this.fluid.n - 8));
+      else this.settled = true;
+      return;
+    }
+    const mouth = c === GOAL ? [120, 50] : [120, 132];
+    const ok = this.fluid.regulate(TARGETS[c - 1], 5, 7, this.pouring ? mouth : null);
+    if(ok){
+      if(++this.okFrames > 8){ this.settled = true; this.pouring = false; }
+    } else this.okFrames = 0;
+  }
+
+  setCups(n){
+    const cups = Math.max(0, Math.min(GOAL, n));
+    this.pouring = cups > this.state.cups;
+    this.settled = false; this.okFrames = 0;
+    this.setState({ cups });
+  }
+
+  addCup = () => {
+    if(this.state.cups >= GOAL) return;
+    const n = this.state.cups + 1;
+    this.setCups(n);
+    if(n === GOAL){
+      this.flourish = performance.now();
+      const r = this.ringRef.current;
+      if(r){ r.style.animation = "none"; void r.offsetWidth; r.style.animation = "flourishRing .9s ease-out"; }
+    }
+  };
+
+  renderVals(){
+    const cups = this.state.cups, ts = this.state.tiltState;
+    const out = {
+      canvasRef: this.canvasRef, ringRef: this.ringRef,
+      addCup: this.addCup, tiltTap: this.askTilt,
+      showTiltAsk: ts === "ask",
+      outlineColor: this.state.accent ? "#f25c1f" : "#17171a",
+      hint: cups === 0 ? "Tap + to log a cup"
+        : cups >= GOAL ? "Goal met"
+        : `${cups} of ${GOAL} — tap top dot to undo`
+    };
+    for(let n = 1; n <= GOAL; n++){
+      out["on" + n] = n <= cups ? 1 : 0;
+      out["tap" + n] = n === cups ? () => this.setCups(cups - 1) : undefined;
+    }
+    return out;
+  }
+}
+
+</script>
+</body>
+</html>
