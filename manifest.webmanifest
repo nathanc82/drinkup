@@ -2,7 +2,7 @@
   "name": "H2O–8",
   "short_name": "H2O–8",
   "description": "Eight cups of water a day. On-device only.",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
